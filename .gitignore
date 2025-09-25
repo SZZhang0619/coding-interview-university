@@ -2,12 +2,12 @@
 *.iml
 personal-9894.md
 
-# Targets Windows & Unix temporary files
+# Temporary files (Windows & Unix)
 ~$*
 *~
 
-# OS generated files #
-######################
+# OS generated files
+.angular
 .DS_Store
 .DS_Store?
 ._*
@@ -18,3 +18,18 @@ Thumbs.db
 
 # Sublime Files
 .sublime
+
+# Dependencies
+/node_modules
+
+# Build output
+/dist/
+
+# Lockfiles (using pnpm)
+/package-lock.json
+
+# Commit helper temp file
+/commit_msg.txt
+
+# Angular cache
+/.angular/cache
