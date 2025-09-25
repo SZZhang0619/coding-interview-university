@@ -1,0 +1,77 @@
+name: Deploy Angular App to GitHub Pages
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+        
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: latest
+        
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      
+      - name: Disable Angular Analytics
+        run: pnpm exec ng analytics disable --global
+      
+      - name: Build Angular App
+        run: pnpm exec ng build --configuration=production --base-href="/coding-interview-university/" --deploy-url="/coding-interview-university/"
+      
+      - name: Resolve dist path (Angular browser folder if present)
+        id: paths
+        shell: bash
+        run: |
+          OUT_DIR="dist/coding-interview-university-angular"
+          if [ -d "$OUT_DIR/browser" ]; then OUT_DIR="$OUT_DIR/browser"; fi
+          echo "out_dir=$OUT_DIR" >> "$GITHUB_OUTPUT"
+          echo "Resolved out_dir=$OUT_DIR"
+      
+      - name: Add SPA 404 fallback
+        run: |
+          cp -v "${{ steps.paths.outputs.out_dir }}/index.html" "${{ steps.paths.outputs.out_dir }}/404.html"
+      
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+      
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ${{ steps.paths.outputs.out_dir }}
+
+  deploy:
+    if: github.event_name == 'push'
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
