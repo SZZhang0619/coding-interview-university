@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coding Interview University - 程式面試大學</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8fafc;
+        }
+
+        .header {
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: #3b82f6;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .logo-text h1 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .logo-text p {
+            font-size: 0.875rem;
+            color: #64748b;
+        }
+
+        .stats {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: #64748b;
+        }
+
+        .progress-ring {
+            position: relative;
+            width: 80px;
+            height: 80px;
+        }
+
+        .progress-ring svg {
+            transform: rotate(-90deg);
+        }
+
+        .progress-ring-bg {
+            fill: none;
+            stroke: #e2e8f0;
+            stroke-width: 6;
+        }
+
+        .progress-ring-fill {
+            fill: none;
+            stroke: #3b82f6;
+            stroke-width: 6;
+            stroke-linecap: round;
+            transition: stroke-dashoffset 0.5s ease;
+        }
+
+        .progress-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        .progress-percentage {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .progress-label {
+            font-size: 0.625rem;
+            color: #64748b;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .tabs {
+            margin-bottom: 2rem;
+        }
+
+        .tab-buttons {
+            display: flex;
+            background: white;
+            border-radius: 8px;
+            padding: 4px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .tab-button {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border: none;
+            background: none;
+            cursor: pointer;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .tab-button.active {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .category-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border: 1px solid #e2e8f0;
+        }
+
+        .category-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .category-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #1e293b;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .category-stats {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .category-count {
+            font-size: 0.875rem;
+            color: #64748b;
+        }
+
+        .category-badge {
+            background: #f1f5f9;
+            color: #475569;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .category-badge.completed {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #f1f5f9;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3b82f6, #1d4ed8);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            margin-bottom: 0.5rem;
+        }
+
+        .checkbox-item:hover {
+            background: #f8fafc;
+        }
+
+        .checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #d1d5db;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 2px;
+            transition: all 0.2s;
+        }
+
+        .checkbox.checked {
+            background: #10b981;
+            border-color: #10b981;
+            color: white;
+        }
+
+        .checkbox-text {
+            flex: 1;
+            font-size: 0.875rem;
+            color: #374151;
+            transition: all 0.2s;
+        }
+
+        .checkbox-text.completed {
+            text-decoration: line-through;
+            color: #9ca3af;
+        }
+
+        .item-badge {
+            background: #f3f4f6;
+            color: #6b7280;
+            padding: 0.125rem 0.375rem;
+            border-radius: 3px;
+            font-size: 0.75rem;
+            margin-top: 0.25rem;
+            display: inline-block;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border: 1px solid #e2e8f0;
+        }
+
+        .stat-card-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .overall-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            text-align: center;
+        }
+
+        .overall-stat {
+            padding: 1rem;
+        }
+
+        .overall-stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .overall-stat-label {
+            font-size: 0.875rem;
+            color: #64748b;
+        }
+
+        .green { color: #10b981; }
+        .blue { color: #3b82f6; }
+        .purple { color: #8b5cf6; }
+        .orange { color: #f59e0b; }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .stats {
+                gap: 1rem;
+            }
+
+            .overall-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">CIU</div>
+                <div class="logo-text">
+                    <h1>Coding Interview University</h1>
+                    <p>程式面試大學 - 完整學習路線</p>
+                </div>
+            </div>
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-number" id="completed-count">1</div>
+                    <div class="stat-label">已完成</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="total-count">41</div>
+                    <div class="stat-label">總項目</div>
+                </div>
+                <div class="progress-ring">
+                    <svg width="80" height="80">
+                        <circle class="progress-ring-bg" cx="40" cy="40" r="32"></circle>
+                        <circle class="progress-ring-fill" cx="40" cy="40" r="32" 
+                                stroke-dasharray="201.06" stroke-dashoffset="195.03" id="progress-circle"></circle>
+                    </svg>
+                    <div class="progress-text">
+                        <div class="progress-percentage" id="progress-percentage">2%</div>
+                        <div class="progress-label">完成</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="tabs">
+            <div class="tab-buttons">
+                <button class="tab-button active" onclick="switchTab('content')">學習內容</button>
+                <button class="tab-button" onclick="switchTab('stats')">進度統計</button>
+            </div>
+        </div>
+
+        <div id="content-tab" class="tab-content active">
+            <div class="category-card">
+                <div class="category-header">
+                    <h2 class="category-title">
+                        📚 演算法複雜度 / Big-O / 漸進分析
+                    </h2>
+                    <div class="category-stats">
+                        <span class="category-count">1 / 4</span>
+                        <span class="category-badge">25%</span>
+                    </div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 25%"></div>
+                </div>
+                <div class="checkbox-item" onclick="toggleCheckbox(this)">
+                    <div class="checkbox">
+                        <span>✓</span>
+                    </div>
+                    <div class="checkbox-text">
+                        學習演算法複雜度 / Big-O / 漸進分析
+                        <div class="item-badge">演算法</div>
+                    </div>
+                </div>
+                <div class="checkbox-item" onclick="toggleCheckbox(this)">
+                    <div class="checkbox">
+                        <span>✓</span>
+                    </div>
+                    <div class="checkbox-text">
+                        了解時間複雜度和空間複雜度
+                        <div class="item-badge">演算法</div>
+                    </div>
+                </div>
+                <div class="checkbox-item" onclick="toggleCheckbox(this)">
+                    <div class="checkbox">
+                        <span>✓</span>
+                    </div>
+                    <div class="checkbox-text">
+                        練習分析演算法效率
+                        <div class="item-badge">演算法</div>
+                    </div>
+                </div>
+                <div class="checkbox-item" onclick="toggleCheckbox(this)">
+                    <div class="checkbox checked">
+                        <span>✓</span>
+                    </div>
+                    <div class="checkbox-text completed">
+                        建立學習網站
+                        <div class="item-badge">演算法</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="category-card">
+                <div class="category-header">
+                    <h2 class="category-title">
+                        🏗️ 資料結構
+                    </h2>
+                    <div class="category-stats">
+                        <span class="category-count">0 / 7</span>
+                        <span class="category-badge">0%</span>
+                    </div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 0%"></div>
+                </div>
+                <div class="checkbox-item" onclick="toggleCheckbox(this)">
+                    <div class="checkbox">
+                        <span>✓</span>
+                    </div>
+                    <div class="checkbox-text">
+                        實作動態陣列
+                        <div class="item-badge">資料結構</div>
+                    </div>
+                </div>
+                <div class="checkbox-item" onclick="toggleCheckbox(this)">
+                    <div class="checkbox">
+                        <span>✓</span>
+                    </div>
+                    <div class="checkbox-text">
+                        了解陣列的時間複雜度
+                        <div class="item-badge">資料結構</div>
+                    </div>
+                </div>
+                <div class="checkbox-item" onclick="toggleCheckbox(this)">
+                    <div class="checkbox">
+                        <span>✓</span>
+                    </div>
+                    <div class="checkbox-text">
+                        實作單向 Linked List
+                        <div class="item-badge">資料結構</div>
+                    </div>
+                </div>
+                <div class="checkbox-item" onclick="toggleCheckbox(this)">
+                    <div class="checkbox">
+                        <span>✓</span>
+                    </div>
+                    <div class="checkbox-text">
+                        實作雙向 Linked List
+                        <div class="item-badge">資料結構</div>
+                    </div>
+                </div>
+                <div class="checkbox-item" onclick="toggleCheckbox(this)">
+                    <div class="checkbox">
+                        <span>✓</span>
+                    </div>
+                    <div class="checkbox-text">
+                        實作 Stack 資料結構
+                        <div class="item-badge">資料結構</div>
+                    </div>
+                </div>
+                <div class="checkbox-item" onclick="toggleCheckbox(this)">
+                    <div class="checkbox">
+                        <span>✓</span>
+                    </div>
+                    <div class="checkbox-text">
+                        實作 Queue 資料結構
+                        <div class="item-badge">資料結構</div>
+                    </div>
+                </div>
+                <div class="checkbox-item" onclick="toggleCheckbox(this)">
+                    <div class="checkbox">
+                        <span>✓</span>
+                    </div>
+                    <div class="checkbox-text">
+                        實作 Hash Table
+                        <div class="item-badge">資料結構</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="category-card">
+                <div class="category-header">
+                    <h2 class="category-title">
+                        🔄 排序演算法
+                    </h2>
+                    <div class="category-stats">
+                        <span class="category-count">0 / 6</span>
+                        <span class="category-badge">0%</span>
+                    </div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 0%"></div>
+                </div>
+                <div class="checkbox-item" onclick="toggleCheckbox(this)">
+                    <div class="checkbox">
+                        <span>✓</span>
+                    </div>
+                    <div class="checkbox-text">
+                        實作泡沫排序
+                        <div class="item-badge">排序</div>
+                    </div>
+                </div>
+                <div class="checkbox-item" onclick="toggleCheckbox(this)">
+                    <div class="checkbox">
+                        <span>✓</span>
+                    </div>
+                    <div class="checkbox-text">
+                        實作選擇排序
+                        <div class="item-badge">排序</div>
+                    </div>
+                </div>
+                <div class="checkbox-item" onclick="toggleCheckbox(this)">
+                    <div class="checkbox">
+                        <span>✓</span>
+                    </div>
+                    <div class="checkbox-text">
+                        實作插入排序
+                        <div class="item-badge">排序</div>
+                    </div>
+                </div>
+                <div class="checkbox-item" onclick="toggleCheckbox(this)">
+                    <div class="checkbox">
+                        <span>✓</span>
+                    </div>
+                    <div class="checkbox-text">
+                        實作合併排序
+                        <div class="item-badge">排序</div>
+                    </div>
+                </div>
+                <div class="checkbox-item" onclick="toggleCheckbox(this)">
+                    <div class="checkbox">
+                        <span>✓</span>
+                    </div>
+                    <div class="checkbox-text">
+                        實作快速排序
+                        <div class="item-badge">排序</div>
+                    </div>
+                </div>
+                <div class="checkbox-item" onclick="toggleCheckbox(this)">
+                    <div class="checkbox">
+                        <span>✓</span>
+                    </div>
+                    <div class="checkbox-text">
+                        實作堆積排序
+                        <div class="item-badge">排序</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="stats-tab" class="tab-content">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3 class="stat-card-title">🎯 整體進度</h3>
+                    <div style="display: flex; justify-content: center; align-items: center; height: 120px;">
+                        <div class="progress-ring" style="width: 120px; height: 120px;">
+                            <svg width="120" height="120">
+                                <circle class="progress-ring-bg" cx="60" cy="60" r="48"></circle>
+                                <circle class="progress-ring-fill" cx="60" cy="60" r="48" 
+                                        stroke-dasharray="301.59" stroke-dashoffset="295.56"></circle>
+                            </svg>
+                            <div class="progress-text">
+                                <div class="progress-percentage" style="font-size: 1.5rem;">2%</div>
+                                <div class="progress-label">完成</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <h3 class="stat-card-title">📊 類別進度</h3>
+                    <div style="space-y: 1rem;">
+                        <div style="margin-bottom: 1rem;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                <span style="font-size: 0.875rem;">演算法</span>
+                                <span style="font-size: 0.875rem;">25%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 25%"></div>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 1rem;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                <span style="font-size: 0.875rem;">資料結構</span>
+                                <span style="font-size: 0.875rem;">0%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                <span style="font-size: 0.875rem;">排序</span>
+                                <span style="font-size: 0.875rem;">0%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stat-card" style="grid-column: 1 / -1;">
+                    <h3 class="stat-card-title">⏰ 學習統計</h3>
+                    <div class="overall-stats">
+                        <div class="overall-stat">
+                            <div class="overall-stat-number green">1</div>
+                            <div class="overall-stat-label">已完成</div>
+                        </div>
+                        <div class="overall-stat">
+                            <div class="overall-stat-number blue">40</div>
+                            <div class="overall-stat-label">待完成</div>
+                        </div>
+                        <div class="overall-stat">
+                            <div class="overall-stat-number purple">9</div>
+                            <div class="overall-stat-label">學習類別</div>
+                        </div>
+                        <div class="overall-stat">
+                            <div class="overall-stat-number orange">2%</div>
+                            <div class="overall-stat-label">完成率</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        let completedCount = 1;
+        const totalCount = 41;
+
+        function switchTab(tabName) {
+            // 隱藏所有標籤內容
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // 移除所有按鈕的 active 狀態
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // 顯示選中的標籤內容
+            document.getElementById(tabName + '-tab').classList.add('active');
+            
+            // 添加按鈕的 active 狀態
+            event.target.classList.add('active');
+        }
+
+        function toggleCheckbox(item) {
+            const checkbox = item.querySelector('.checkbox');
+            const text = item.querySelector('.checkbox-text');
+            
+            if (checkbox.classList.contains('checked')) {
+                checkbox.classList.remove('checked');
+                text.classList.remove('completed');
+                completedCount--;
+            } else {
+                checkbox.classList.add('checked');
+                text.classList.add('completed');
+                completedCount++;
+            }
+            
+            updateProgress();
+            updateCategoryProgress(item);
+        }
+
+        function updateProgress() {
+            const percentage = Math.round((completedCount / totalCount) * 100);
+            
+            document.getElementById('completed-count').textContent = completedCount;
+            document.getElementById('progress-percentage').textContent = percentage + '%';
+            
+            // 更新進度環
+            const circumference = 2 * Math.PI * 32;
+            const offset = circumference - (percentage / 100) * circumference;
+            document.getElementById('progress-circle').style.strokeDashoffset = offset;
+        }
+
+        function updateCategoryProgress(item) {
+            const categoryCard = item.closest('.category-card');
+            const checkboxes = categoryCard.querySelectorAll('.checkbox');
+            const checkedBoxes = categoryCard.querySelectorAll('.checkbox.checked');
+            
+            const categoryCompleted = checkedBoxes.length;
+            const categoryTotal = checkboxes.length;
+            const categoryPercentage = Math.round((categoryCompleted / categoryTotal) * 100);
+            
+            // 更新類別統計
+            const categoryCount = categoryCard.querySelector('.category-count');
+            const categoryBadge = categoryCard.querySelector('.category-badge');
+            const progressFill = categoryCard.querySelector('.progress-fill');
+            
+            categoryCount.textContent = `${categoryCompleted} / ${categoryTotal}`;
+            categoryBadge.textContent = `${categoryPercentage}%`;
+            progressFill.style.width = `${categoryPercentage}%`;
+            
+            if (categoryPercentage === 100) {
+                categoryBadge.classList.add('completed');
+            } else {
+                categoryBadge.classList.remove('completed');
+            }
+        }
+
+        // 初始化進度
+        updateProgress();
+    </script>
+</body>
+</html>
