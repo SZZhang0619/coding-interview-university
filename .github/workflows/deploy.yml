@@ -27,23 +27,22 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22'
-          cache: 'pnpm'       
-          cache-dependency-path: pnpm-lock.yaml
+          cache: 'npm'
+          cache-dependency-path: package-lock.json
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 9
-          run_install: false
-        
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci
+          else
+            npm install
+          fi
       
       - name: Disable Angular Analytics
-        run: pnpm exec ng analytics disable --global
+        run: npx ng analytics disable --global
       
       - name: Build Angular App
-        run: pnpm exec ng build --configuration=production --base-href="/coding-interview-university/" --deploy-url="/coding-interview-university/"
+        run: npx ng build --configuration=production --base-href="/coding-interview-university/" --deploy-url="/coding-interview-university/"
       
       - name: Resolve dist path (Angular browser folder if present)
         id: paths
