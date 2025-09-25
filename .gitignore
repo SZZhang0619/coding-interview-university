@@ -25,9 +25,6 @@ Thumbs.db
 # Build output
 /dist/
 
-# Lockfiles (using pnpm)
-/package-lock.json
-
 # Commit helper temp file
 /commit_msg.txt
 
